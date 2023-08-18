@@ -8,9 +8,12 @@ use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rules\Password;
-use App\Models\{User, School, LogsModel};
+use App\Models\{User, School, LogsModel,Program};
+// use App\Models\{User, School, CitiesModel, StateModel, LogsModel, Program, Package};
 use DataTables;
 use Mail;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 
 class AuthController extends Controller
@@ -263,6 +266,116 @@ class AuthController extends Controller
         $schoolid = $user->school_id;
         $userlist = DB::table('users')->where(['school_id' => $user->school_id, 'usertype' => 'teacher', 'is_deleted' => 0])->orderBy('id')->get();
         return view('users.teacher', compact('userlist', 'schoolid'));
+    }
+
+    public function studentuserlist(Request $request)
+    {
+        $schoolid = $request->input('school');
+        $userlist = DB::table('users')->where(['school_id' => $schoolid, 'usertype' => 'student', 'is_deleted' => 0])->orderBy('id')->get();
+        return view('users.student', compact('userlist', 'schoolid'));
+    }
+
+    public function addUserStudent(Request $request)
+    {
+        $grades = Program::where("status", 1)->get(["class_name", "id"]);
+        $schoolid = $request->input('school');
+        return view('users.student-add', compact('schoolid','grades'));
+    }
+
+
+    public function createuserstudent(Request $request)
+    {
+        $request->validate([
+            'name' => 'required',
+            'email' => 'required',
+            'grade_id' => 'required',
+            'phone' => 'required',
+        ]);
+
+        $data = $request->all();
+        $check = $this->createstudent($data);
+        $redirect = (session()->get('usertype') == 'admin') ? route('school.student.list') : route('student.list', ['school' => $data['school']]);
+        if ($check == "error") {
+            return redirect($redirect)->with('error', 'Maximum licences limit reached.');
+        } else {
+            return redirect($redirect)->withSuccess('User added successfully!');
+        }
+        
+    }
+    public function createstudent(array $data)
+    {
+        $check_school_user = School::with(['student' => function ($query) {
+            $query->where('usertype', '=', 'student')->where(['is_deleted' => 0]);
+        }])->where(['is_deleted' => 0, 'id' => $data['school']])->orderBy('id')->first();
+        $total_student = $check_school_user->student->count();
+    
+        if ($check_school_user->licence > $total_student) {
+            $passWord = isset($data['password']) ? $data['password'] : Str::random(10);
+            $user_email = strtolower($data['email']);
+            $username = explode("@", $user_email);
+            $userId = trim($username[0]) . date('Yims');
+            $add_user = [
+                'name' => $data['name'],
+                'email' => $data['email'],
+                'grade_id' => $data['grade_id'],
+                'phone' => $data['phone'],
+                'school_id' => $data['school'],
+                'usertype' => 'student',
+                'status' => 1,
+                'username' => $userId,
+                'view_pass' => $passWord,
+                'password' => Hash::make($passWord)
+            ];
+            #print_r($add_user); die;
+            #$this->UserAccountMail(['username' => $data['email'], 'userid' => $userId, 'pass' => $passWord, 'school_name' => $check_school_user->school_name]);
+            return User::create($add_user);
+        } else {
+            return "error";
+        }
+    }
+    public function studentxls(Request $request){
+        // dd($request->school);
+        try {
+            $excel = $request->file("xlsxFile")->path();
+$spreadsheet = \PhpOffice\PhpSpreadsheet\IOFactory::load($excel);
+$sheet = $spreadsheet->getSheet(0);
+$data = $sheet->toArray(true,true,true,true); 
+// dd($data);
+$msg="";
+
+if(count($data)>1){ 
+    $data = array_values($data);   
+    $fields = array_values($data[0]);
+    unset($data[0]);
+    $dataSetList = array();
+    foreach ($data as $key => $value) {
+        $dataSet = array(
+            'school_id' => $request->school,
+            'usertype' => 'student',
+            'status' => 1,
+            'username' => array_values($value)[array_search('name', $fields)].Str::random(3),
+            'view_pass' => Str::random(6),
+            'password' => Hash::make(Str::random(6)), 
+        );
+        $dataSet[$fields[0]]=array_values($value)[0];
+        $dataSet[$fields[1]]=array_values($value)[1];
+        $dataSet[$fields[2]]=array_values($value)[2];
+        $dataSet[$fields[3]]=array_values($value)[3];
+        User::create($dataSet);
+        $dataSetList[]=$dataSet;
+    }
+    // dd(json_encode($dataSetList));
+    
+    //  return $msg='Excel imported successfully';
+     return redirect()->back();
+     
+}else{
+   return $msg='Sorry! No user found in excel file';
+}
+
+        } catch (\Throwable $th) {
+            return $msg='Something went wrong';
+        }
     }
 
     public function SchoolAdmin(Request $request)

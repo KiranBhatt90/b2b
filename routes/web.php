@@ -92,6 +92,11 @@ Route::middleware('auth')->prefix('school')->controller(AuthController::class)->
     Route::post('reset-password', 'resetPassword')->name('user.password');
     Route::get('manage-school-admin', 'SchoolAdmin')->name('school.admin');
     Route::get('update-school-admin/{userid}', 'updateAdminUser')->name('school.admin.edit');
+
+    Route::get('student-list', 'studentuserlist')->name('student.list');
+    Route::get('add-student', 'addUserStudent')->name('student.add');
+    Route::post('student-add', 'createuserstudent')->name('student.store');
+    Route::post('student-xls', 'studentxls')->name('student.xls');
 });
 
 Route::middleware(['auth', 'isAdmin'])->prefix('whats-new')->controller(Notification::class)->group(function () {

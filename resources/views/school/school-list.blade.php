@@ -110,6 +110,11 @@
                                                         class="waves-effect waves-light btn btn-sm btn-outline btn-primary mb-5"
                                                         title="Manage Teacher"><i class="fa fa-user-o"></i> Teacher</a>
 
+                                                        <a href="{{ route('student.list', ['school' => $sdata->id]) }}"
+                                                        class="waves-effect waves-light btn btn-sm btn-outline btn-primary mb-5"
+                                                        title="Manage Student"><i class="fa fa-user-o"></i> Student</a>
+
+
                                             </td>
                                         </tr>
                                     @endforeach

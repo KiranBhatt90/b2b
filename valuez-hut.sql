@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 13, 2023 at 05:12 PM
+-- Generation Time: Aug 22, 2023 at 09:07 AM
 -- Server version: 10.4.28-MariaDB
--- PHP Version: 8.2.4
+-- PHP Version: 8.0.28
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -4295,7 +4295,11 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES
 (17, '2023_01_06_161156_add_city_to_school', 7),
 (18, '2023_02_13_102943_create_package_table', 8),
 (19, '2023_03_10_113854_add_demo_to_lesson_plan_table', 9),
-(20, '2023_03_10_120558_add_demo_to_school_table', 9);
+(20, '2023_03_10_120558_add_demo_to_school_table', 9),
+(21, '2023_06_01_210303_create_notify_logs_table', 10),
+(25, '2023_08_15_141529_students', 12),
+(26, '2023_08_17_095703_add_class_name_to_students_table', 13),
+(27, '2023_08_17_132049_add_password_to_students_table', 13);
 
 -- --------------------------------------------------------
 
@@ -4321,6 +4325,20 @@ INSERT INTO `notification` (`id`, `title`, `description`, `external_link`, `stat
 (1, 'Test notification', 'Manage What\'s New Add What\'s New', NULL, 1, '2022-12-29 12:35:39', '2022-12-29 12:35:39'),
 (2, 'New Bulletin added', 'Learn all about Chat GPT', NULL, 1, '2023-02-18 22:16:05', '2023-02-18 22:16:05'),
 (3, 'New test on 16 Mar', 'Just checking', NULL, 1, '2023-03-16 18:06:18', '2023-03-16 18:06:18');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `notify_logs`
+--
+
+CREATE TABLE `notify_logs` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `uid` int(11) NOT NULL DEFAULT 0,
+  `nid` int(11) NOT NULL DEFAULT 0,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -4629,6 +4647,34 @@ INSERT INTO `states` (`id`, `name`, `country_id`, `country_code`, `latitude`, `l
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `students`
+--
+
+CREATE TABLE `students` (
+  `id` bigint(20) UNSIGNED NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `grade` bigint(20) UNSIGNED NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(20) NOT NULL,
+  `status` tinyint(1) NOT NULL,
+  `is_deleted` tinyint(1) NOT NULL,
+  `deleted_at` timestamp NULL DEFAULT NULL,
+  `view_pass` varchar(255) DEFAULT NULL,
+  `password` varchar(255) DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `students`
+--
+
+INSERT INTO `students` (`id`, `name`, `grade`, `email`, `phone`, `status`, `is_deleted`, `deleted_at`, `view_pass`, `password`, `created_at`, `updated_at`) VALUES
+(1, 'Priya Dutt', 2, 'priya123@yopmail.com', '9878558877', 1, 0, NULL, 'DllTIvoYsKqf', '$2y$10$4ZIe.E8jJImEbXVnEC3cT.zh3ZAOLDf3.XSK8ErocyeEhaIbQCjJK', '2023-08-21 15:43:30', '2023-08-21 15:43:30');
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `users`
 --
 
@@ -4658,7 +4704,17 @@ CREATE TABLE `users` (
 INSERT INTO `users` (`id`, `name`, `email`, `usertype`, `email_verified_at`, `view_pass`, `password`, `remember_token`, `created_at`, `updated_at`, `school_id`, `status`, `is_deleted`, `username`, `role_type`, `otp`) VALUES
 (1, 'Super Admin', 'admin@gmail.com', 'superadmin', NULL, 'cZSajKnC', '$2y$10$LLFRBOyBlJtd5kdsmI0WZOqG6/8fOQ7j.gi7kyZqZvRbwGMN6g6Qm', NULL, '2022-12-14 18:10:43', NULL, 0, 1, 0, '', '0', ''),
 (2, 'Amit Jain', 'amiy@wewe.mn', 'teacher', NULL, 'cZSajKnC', '$2y$10$LLFRBOyBlJtd5kdsmI0WZOqG6/8fOQ7j.gi7kyZqZvRbwGMN6g6Qm', NULL, '2022-10-26 23:17:45', '2023-01-21 01:29:43', 1, 1, 0, '', '0', ''),
-(3, 'rahul', 'teacher@vhut.com', 'teacher', NULL, 'k84yD$6A@PG9', '$2y$10$rOawjEDwDozzNI6xGMgVi.7Tnn/qRAJvB4H.RxqC81NtPICVW2Fj.', NULL, '2022-10-26 23:18:02', '2022-11-04 11:45:21', 1, 1, 0, '', '0', '');
+(3, 'rahul', 'teacher@vhut.com', 'teacher', NULL, 'k84yD$6A@PG9', '$2y$10$rOawjEDwDozzNI6xGMgVi.7Tnn/qRAJvB4H.RxqC81NtPICVW2Fj.', NULL, '2022-10-26 23:18:02', '2022-11-04 11:45:21', 1, 1, 0, '', '0', ''),
+(30, 'Dr. Eldred Gleason PhD', 'ebartell@example.com', 'teacher', '2023-08-18 07:04:00', '', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', '3Lo4zRtQsN', '2023-08-18 07:04:00', '2023-08-18 07:04:00', 0, 0, 0, '', '0', ''),
+(31, 'Blaze Legros', 'jacynthe.adams@example.org', 'teacher', '2023-08-18 07:04:00', '', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'HAB0Zbgnnt', '2023-08-18 07:04:00', '2023-08-18 07:04:00', 0, 0, 0, '', '0', ''),
+(32, 'Oleta Schinner', 'heller.lewis@example.com', 'teacher', '2023-08-18 07:04:00', '', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'X6vbtd2PKG', '2023-08-18 07:04:00', '2023-08-18 07:04:00', 0, 0, 0, '', '0', ''),
+(33, 'Prof. Landen Schumm Sr.', 'garett.kozey@example.net', 'teacher', '2023-08-18 07:04:00', '', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'SAowqmB9eV', '2023-08-18 07:04:00', '2023-08-18 07:04:00', 0, 0, 0, '', '0', ''),
+(34, 'Eden Ferry Sr.', 'perry.mueller@example.net', 'teacher', '2023-08-18 07:04:00', '', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'buaRSFkdSV', '2023-08-18 07:04:00', '2023-08-18 07:04:00', 0, 0, 0, '', '0', ''),
+(35, 'Geoffrey Renner', 'erwin51@example.com', 'teacher', '2023-08-18 07:04:00', '', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'AX1TvhrQLo', '2023-08-18 07:04:00', '2023-08-18 07:04:00', 0, 0, 0, '', '0', ''),
+(36, 'Golden Johnston', 'danyka.white@example.com', 'teacher', '2023-08-18 07:04:00', '', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'rvtpw3gB7p', '2023-08-18 07:04:00', '2023-08-18 07:04:00', 0, 0, 0, '', '0', ''),
+(37, 'Brittany Sipes', 'bpadberg@example.net', 'teacher', '2023-08-18 07:04:00', '', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'qiK1QV0Z6R', '2023-08-18 07:04:00', '2023-08-18 07:04:00', 0, 0, 0, '', '0', ''),
+(38, 'Quincy Pagac', 'stella.schaden@example.org', 'teacher', '2023-08-18 07:04:00', '', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'Qb8SkjU7HE', '2023-08-18 07:04:00', '2023-08-18 07:04:00', 0, 0, 0, '', '0', ''),
+(39, 'Waino Becker', 'hector.pouros@example.org', 'teacher', '2023-08-18 07:04:00', '', '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', 'RBl3pFR8ei', '2023-08-18 07:04:00', '2023-08-18 07:04:00', 0, 0, 0, '', '0', '');
 
 --
 -- Indexes for dumped tables
@@ -4714,6 +4770,12 @@ ALTER TABLE `notification`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `notify_logs`
+--
+ALTER TABLE `notify_logs`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indexes for table `package`
 --
 ALTER TABLE `package`
@@ -4764,6 +4826,13 @@ ALTER TABLE `states`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `students`
+--
+ALTER TABLE `students`
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `students_grade_foreign` (`grade`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -4802,7 +4871,7 @@ ALTER TABLE `logs`
 -- AUTO_INCREMENT for table `master_class`
 --
 ALTER TABLE `master_class`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=8;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `master_course`
@@ -4814,13 +4883,19 @@ ALTER TABLE `master_course`
 -- AUTO_INCREMENT for table `migrations`
 --
 ALTER TABLE `migrations`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=21;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `notification`
 --
 ALTER TABLE `notification`
   MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+
+--
+-- AUTO_INCREMENT for table `notify_logs`
+--
+ALTER TABLE `notify_logs`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT;
 
 --
 -- AUTO_INCREMENT for table `package`
@@ -4865,10 +4940,26 @@ ALTER TABLE `states`
   MODIFY `id` mediumint(8) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
+-- AUTO_INCREMENT for table `students`
+--
+ALTER TABLE `students`
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
+
+--
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
+  MODIFY `id` bigint(20) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
+
+--
+-- Constraints for dumped tables
+--
+
+--
+-- Constraints for table `students`
+--
+ALTER TABLE `students`
+  ADD CONSTRAINT `students_grade_foreign` FOREIGN KEY (`grade`) REFERENCES `master_class` (`id`) ON DELETE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

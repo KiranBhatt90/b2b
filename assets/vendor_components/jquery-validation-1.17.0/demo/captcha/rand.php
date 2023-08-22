@@ -1,3 +1,5 @@
+
+
 <?php
 
 // Create a random string, leaving out 'o' to avoid confusion with '0'

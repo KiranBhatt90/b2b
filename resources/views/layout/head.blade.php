@@ -13,3 +13,5 @@
 <!-- Style-->
 <link rel="stylesheet" href="{{ asset('assets/src/css/style.css') }}">
 <link rel="stylesheet" href="{{ asset('assets/src/css/skin_color.css') }}">
+
+

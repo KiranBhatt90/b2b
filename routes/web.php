@@ -100,17 +100,16 @@ Route::middleware(['auth', 'isAdmin'])->prefix('grade')->controller(ProgramContr
 });
 
 Route::middleware('auth')->prefix('school')->controller(AuthController::class)->group(function () {
- Route::get('manage-teacher', 'userlist')->name('teacher.list');
- Route::get('add-teacher', 'addUser')->name('teacher.add');
- Route::get('update-teacher', 'updateUser')->name('teacher.edit');
- Route::post('teacher-remove', 'destroy')->name('teacher.remove');
- Route::post('teacher-add', 'createuser')->name('teacher.store');
- Route::post('teacher-edit', 'edituser')->name('teacher.update');
- Route::get('teacher-list', 'teacherList')->name('school.teacher.list');
- Route::post('reset-password', 'resetPassword')->name('user.password');
- Route::get('manage-school-admin', 'SchoolAdmin')->name('school.admin');
- Route::get('update-school-admin/{userid}', 'updateAdminUser')->name('school.admin.edit');
-
+    Route::get('manage-teacher', 'userlist')->name('teacher.list');
+    Route::get('add-teacher', 'addUser')->name('teacher.add');
+    Route::get('update-teacher', 'updateUser')->name('teacher.edit');
+    Route::post('teacher-remove', 'destroy')->name('teacher.remove');
+    Route::post('teacher-add', 'createuser')->name('teacher.store');
+    Route::post('teacher-edit', 'edituser')->name('teacher.update');
+    Route::get('teacher-list', 'teacherList')->name('school.teacher.list');
+    Route::post('reset-password', 'resetPassword')->name('user.password');
+    Route::get('manage-school-admin', 'SchoolAdmin')->name('school.admin');
+    Route::get('update-school-admin/{userid}', 'updateAdminUser')->name('school.admin.edit');
 });
 
 Route::middleware(['auth', 'isAdmin'])->prefix('whats-new')->controller(Notification::class)->group(function () {

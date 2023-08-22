@@ -15,4 +15,8 @@ class School extends Model
     {
         return $this->hasMany(User::class, 'school_id', 'id');
     }
+    public function student()
+    {
+        return $this->hasMany(User::class, 'school_id', 'id');
+    }
 }

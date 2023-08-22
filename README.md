@@ -17,6 +17,9 @@ No. 3 issue of CSS for dropdown grade is fixed // Update
 16 August 2023, 7.48 pm
 No. 7 issue of toggle button is fixed, the status is updated updated on server side as well.
 
+Bulk upload completed 21-08-23
+
+
 17 Aug, 10.40
 No 6. unique validation is applied to email.
 No  5. password confirmation was already completed.
